@@ -1,0 +1,38 @@
+--- extension/xhprof.c.5.5	2013-11-04 11:53:57.392446961 +0200
++++ extension/xhprof.c	2013-11-04 11:54:37.247095455 +0200
+@@ -1764,34 +1764,7 @@ ZEND_DLEXPORT void hp_execute_internal(z
+     BEGIN_PROFILING(&hp_globals.entries, func, hp_profile_flag);
+   }
+ 
+-  if (!_zend_execute_internal) {
+-    /* no old override to begin with. so invoke the builtin's implementation  */
+-    zend_op *opline = EX(opline);
+-#if ZEND_EXTENSION_API_NO >= 220100525
+-    temp_variable *retvar = &EX_T(opline->result.var);
+-    ((zend_internal_function *) EX(function_state).function)->handler(
+-                       opline->extended_value,
+-                       retvar->var.ptr,
+-                       (EX(function_state).function->common.fn_flags & ZEND_ACC_RETURN_REFERENCE) ?
+-                       &retvar->var.ptr:NULL,
+-                       EX(object), ret TSRMLS_CC);
+-#else
+-    ((zend_internal_function *) EX(function_state).function)->handler(
+-                       opline->extended_value,
+-                       EX_T(opline->result.u.var).var.ptr,
+-                       EX(function_state).function->common.return_reference ?
+-                       &EX_T(opline->result.u.var).var.ptr:NULL,
+-                       EX(object), ret TSRMLS_CC);
+-
+-#endif
+-  } else {
+-    /* call the old override */
+-#if PHP_VERSION_ID < 50500
+-    _zend_execute_internal(execute_data, ret TSRMLS_CC);
+-#else
+-    _zend_execute_internal(execute_data, fci, ret TSRMLS_CC);
+-#endif
+-  }
++  execute_internal(execute_data, fci, ret TSRMLS_CC);
+ 
+   if (func) {
+     if (hp_globals.entries) {
