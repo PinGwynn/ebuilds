@@ -8,7 +8,7 @@ PHP_EXT_NAME="xhprof"
 PHP_EXT_INI="yes"
 PHP_EXT_ZENDEXT="no"
 
-USE_PHP="php5-6 php5-5"
+USE_PHP="php5-5 php5-6"
 
 inherit php-ext-source-r2 git-2
 
